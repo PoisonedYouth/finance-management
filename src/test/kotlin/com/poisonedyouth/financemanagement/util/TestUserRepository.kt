@@ -3,7 +3,7 @@ package com.poisonedyouth.financemanagement.util
 import arrow.core.Either
 import arrow.core.raise.either
 import arrow.core.raise.ensure
-import com.poisonedyouth.financemanagement.common.UUIDIdentity
+import com.poisonedyouth.financemanagement.common.Identity
 import com.poisonedyouth.financemanagement.failure.Failure
 import com.poisonedyouth.financemanagement.user.domain.Email
 import com.poisonedyouth.financemanagement.user.domain.Name
@@ -19,7 +19,7 @@ val duplicateUserEmail: Email = Email.from("not.doe@mail.com").shouldBeRight()
 val notExistingUserId: UUID = UUID.fromString("95d374d2-440c-4db7-8db5-9f70e31b415e")
 
 val defaultUser: User = User(
-    userId = UUIDIdentity(defaultUserId),
+    userId = Identity(defaultUserId),
     firstname = Name.from("John").shouldBeRight(),
     lastname = Name.from("Doe").shouldBeRight(),
     email = defaultUserEmail
@@ -31,7 +31,7 @@ class TestUserRepository : UserRepository {
             Failure.GenericFailure(RuntimeException("Cannot persist '${user.email.value}'"))
         }
         User(
-            userId = UUIDIdentity(defaultUserId),
+            userId = Identity(defaultUserId),
             firstname = user.firstname,
             lastname = user.lastname,
             email = user.email

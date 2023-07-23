@@ -3,7 +3,7 @@ package com.poisonedyouth.financemanagement.user.adapter.persistence
 import arrow.core.Either
 import arrow.core.raise.either
 import arrow.core.raise.ensure
-import com.poisonedyouth.financemanagement.common.UUIDIdentity
+import com.poisonedyouth.financemanagement.common.Identity
 import com.poisonedyouth.financemanagement.failure.Failure
 import com.poisonedyouth.financemanagement.failure.eval
 import com.poisonedyouth.financemanagement.user.domain.Email
@@ -31,7 +31,7 @@ class ExposedUserRepository : UserRepository {
                 it[email] = user.email.value
             }
             User(
-                userId = UUIDIdentity(id.value),
+                userId = Identity(id.value),
                 firstname = user.firstname,
                 lastname = user.lastname,
                 email = user.email
@@ -67,7 +67,7 @@ class ExposedUserRepository : UserRepository {
                 UserTable.select { UserTable.id eq userId }.firstOrNull()
             }.bind()?.let {
                 User(
-                    userId = UUIDIdentity(it[UserTable.id].value),
+                    userId = Identity(it[UserTable.id].value),
                     firstname = Name.from(it[UserTable.firstname]).bind(),
                     lastname = Name.from(it[UserTable.lastname]).bind(),
                     email = Email.from(it[UserTable.email]).bind()
@@ -82,7 +82,7 @@ class ExposedUserRepository : UserRepository {
                 UserTable.select { UserTable.email eq email.value }.firstOrNull()
             }.bind()?.let {
                 User(
-                    userId = UUIDIdentity(it[UserTable.id].value),
+                    userId = Identity(it[UserTable.id].value),
                     firstname = Name.from(it[UserTable.firstname]).bind(),
                     lastname = Name.from(it[UserTable.lastname]).bind(),
                     email = Email.from(it[UserTable.email]).bind()

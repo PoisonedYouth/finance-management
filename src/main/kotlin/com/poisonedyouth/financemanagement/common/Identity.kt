@@ -6,14 +6,15 @@ import com.poisonedyouth.financemanagement.failure.eval
 import org.slf4j.LoggerFactory
 import java.util.UUID
 
-private val logger = LoggerFactory.getLogger(UUIDIdentity::class.java)
+private val logger = LoggerFactory.getLogger(Identity::class.java)
 
-data class UUIDIdentity(val id: UUID) {
+@JvmInline
+value class Identity(val id: UUID) {
     companion object {
-        fun resolveFromString(value: String): Either<Failure, UUIDIdentity> {
+        fun resolveFromString(value: String): Either<Failure, Identity> {
             return eval(logger) {
                 val uuid = UUID.fromString(value)
-                UUIDIdentity(uuid)
+                Identity(uuid)
             }.mapLeft {
                 Failure.ValidationFailure(it.message)
             }

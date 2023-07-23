@@ -8,7 +8,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeTypeOf
 import java.util.UUID
 
-class UUIDIdentityTest : AnnotationSpec() {
+class IdentityTest : AnnotationSpec() {
 
     @Test
     fun `resolveFromString returns failure for invalid UUID`() {
@@ -16,7 +16,7 @@ class UUIDIdentityTest : AnnotationSpec() {
         val uuid = "INVALID"
 
         // when
-        val actual = UUIDIdentity.resolveFromString(uuid)
+        val actual = Identity.resolveFromString(uuid)
 
         // then
         val failure = actual.shouldBeLeft().shouldBeTypeOf<Failure.ValidationFailure>()
@@ -24,12 +24,12 @@ class UUIDIdentityTest : AnnotationSpec() {
     }
 
     @Test
-    fun `resolveFromString returns UUIDIdentity object for valid UUID`() {
+    fun `resolveFromString returns Identity object for valid UUID`() {
         // given
         val uuid = UUID.randomUUID().toString()
 
         // when
-        val actual = UUIDIdentity.resolveFromString(uuid)
+        val actual = Identity.resolveFromString(uuid)
 
         // then
         val uuidIdentity = actual.shouldBeRight()

@@ -1,7 +1,7 @@
 package com.poisonedyouth.financemanagement.util
 
 import arrow.core.raise.either
-import com.poisonedyouth.financemanagement.common.UUIDIdentity
+import com.poisonedyouth.financemanagement.common.Identity
 import com.poisonedyouth.financemanagement.user.domain.Email
 import com.poisonedyouth.financemanagement.user.domain.Name
 import com.poisonedyouth.financemanagement.user.domain.NewUser
@@ -26,7 +26,7 @@ fun createRandomDefaultUser(uuid: UUID): User {
     val randomSuffix = Random.nextInt()
     return either {
         User(
-            userId = UUIDIdentity(uuid),
+            userId = Identity(uuid),
             firstname = Name.from("John").bind(),
             lastname = Name.from("Doe").bind(),
             email = Email.from("John.Doe-$randomSuffix@mail.com").bind()
