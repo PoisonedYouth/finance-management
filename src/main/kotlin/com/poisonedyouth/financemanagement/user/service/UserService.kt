@@ -24,7 +24,7 @@ class UserService(
 ) : UserUseCase {
     private val logger = LoggerFactory.getLogger(UserService::class.java)
 
-    override fun create(userDto: NewUserDto): Either<Failure, UserDto> = either {
+    override fun create(userDto: NewUserDto): Either<Failure, String> = either {
         val user = validateAndCreateNewUser(userDto)
         val email = user.bind().email
         val existingUser = userRepository.findByEmail(email).bind()
@@ -34,13 +34,13 @@ class UserService(
 
         val persistedUser = userRepository.create(user.bind()).bind()
         accountUseCase.triggerCreation(persistedUser.email)
-        persistedUser.toUserDto().bind()
+        persistedUser.userId.id.toString()
     }
 
-    override fun update(userDto: UserDto): Either<Failure, UserDto> = either {
+    override fun update(userDto: UserDto): Either<Failure, Unit> = either {
         val user = validateAndCreateUser(userDto)
-        val updatedUser = userRepository.update(user.bind()).bind()
-        updatedUser.toUserDto().bind()
+        userRepository.update(user.bind()).bind()
+        Unit
     }
 
     override fun delete(userId: String): Either<Failure, Int> = either {

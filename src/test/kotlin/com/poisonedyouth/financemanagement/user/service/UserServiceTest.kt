@@ -58,8 +58,8 @@ class UserServiceTest : AnnotationSpec() {
         val actual = userService.create(userDto)
 
         // then
-        val persistedUserDto = actual.shouldBeRight()
-        persistedUserDto.userId shouldBe defaultUserId.toString()
+        val userId = actual.shouldBeRight()
+        userId shouldBe defaultUserId.toString()
     }
 
     @Test
@@ -94,8 +94,7 @@ class UserServiceTest : AnnotationSpec() {
         val actual = userService.update(userDto)
 
         // then
-        val persistedUserDto = actual.shouldBeRight()
-        persistedUserDto.userId shouldBe defaultUserId.toString()
+        actual.shouldBeRight()
     }
 
     @Test
