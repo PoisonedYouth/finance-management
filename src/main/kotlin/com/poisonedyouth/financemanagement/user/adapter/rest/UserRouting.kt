@@ -1,6 +1,7 @@
 package com.poisonedyouth.financemanagement.user.adapter.rest
 
 import com.poisonedyouth.financemanagement.failure.Failure
+import com.poisonedyouth.financemanagement.user.port.NewUserDto
 import com.poisonedyouth.financemanagement.user.port.UserDto
 import com.poisonedyouth.financemanagement.user.port.UserUseCase
 import io.ktor.http.HttpStatusCode
@@ -33,7 +34,7 @@ fun Application.configureUserRouting() {
     routing {
         route("/api/v1/user") {
             post {
-                val userDto = call.receive<UserDto>()
+                val userDto = call.receive<NewUserDto>()
                 userUseCase.create(userDto).fold(
                     { failure -> mapFailureToHttpResponse(call, failure) }
                 ) {
@@ -79,7 +80,8 @@ fun Application.configureUserRouting() {
                         ) {
                             if (it == null) {
                                 call.respond(
-                                    status = HttpStatusCode.NotFound, message = "User with id '$userId' does not exist."
+                                    status = HttpStatusCode.NotFound,
+                                    message = "User with id '$userId' does not exist."
                                 )
                                 return@fold
                             }

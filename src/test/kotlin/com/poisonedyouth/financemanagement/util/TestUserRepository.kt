@@ -7,6 +7,7 @@ import com.poisonedyouth.financemanagement.common.UUIDIdentity
 import com.poisonedyouth.financemanagement.failure.Failure
 import com.poisonedyouth.financemanagement.user.domain.Email
 import com.poisonedyouth.financemanagement.user.domain.Name
+import com.poisonedyouth.financemanagement.user.domain.NewUser
 import com.poisonedyouth.financemanagement.user.domain.User
 import com.poisonedyouth.financemanagement.user.port.UserRepository
 import io.kotest.assertions.arrow.core.shouldBeRight
@@ -25,12 +26,15 @@ val defaultUser: User = User(
 )
 
 class TestUserRepository : UserRepository {
-    override fun create(user: User): Either<Failure, User> = either {
+    override fun create(user: NewUser): Either<Failure, User> = either {
         ensure(user.email.value == "john.doe@mail.com") {
             Failure.GenericFailure(RuntimeException("Cannot persist '${user.email.value}'"))
         }
-        user.copy(
-            userId = UUIDIdentity(defaultUserId)
+        User(
+            userId = UUIDIdentity(defaultUserId),
+            firstname = user.firstname,
+            lastname = user.lastname,
+            email = user.email
         )
     }
 

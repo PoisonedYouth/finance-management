@@ -1,8 +1,8 @@
 package com.poisonedyouth.financemanagement.user.adapter.persistence
 
-import com.poisonedyouth.financemanagement.common.UUIDIdentity
 import com.poisonedyouth.financemanagement.failure.Failure
 import com.poisonedyouth.financemanagement.user.domain.Email
+import com.poisonedyouth.financemanagement.util.createRandomDefaultNewUser
 import com.poisonedyouth.financemanagement.util.createRandomDefaultUser
 import io.kotest.assertions.arrow.core.shouldBeLeft
 import io.kotest.assertions.arrow.core.shouldBeRight
@@ -27,7 +27,7 @@ class ExposedUserRepositoryTest : AnnotationSpec() {
     @Test
     fun `create adds new user to database`() {
         // given
-        val user = createRandomDefaultUser()
+        val user = createRandomDefaultNewUser()
 
         // when
         val actual = userRepository.create(user)
@@ -38,13 +38,13 @@ class ExposedUserRepositoryTest : AnnotationSpec() {
         persistedUser.firstname shouldBe user.firstname
         persistedUser.lastname shouldBe user.lastname
         persistedUser.email shouldBe user.email
-        userRepository.findById(persistedUser.userId.getIdOrNull()!!).shouldBeRight(persistedUser)
+        userRepository.findById(persistedUser.userId.id).shouldBeRight(persistedUser)
     }
 
     @Test
     fun `create returns failure when email already exists`() {
         // given
-        val user = createRandomDefaultUser()
+        val user = createRandomDefaultNewUser()
         userRepository.create(user)
 
         // when
@@ -58,7 +58,7 @@ class ExposedUserRepositoryTest : AnnotationSpec() {
     @Test
     fun `update changes existing user in database`() {
         // given
-        val user = createRandomDefaultUser()
+        val user = createRandomDefaultNewUser()
         val existingUser = userRepository.create(user).shouldBeRight()
 
         // when
@@ -72,28 +72,13 @@ class ExposedUserRepositoryTest : AnnotationSpec() {
         val updatedUser = actual.shouldBeRight()
         updatedUser.userId shouldBe existingUser.userId
         updatedUser.email shouldNotBe existingUser.email
-        userRepository.findById(updatedUser.userId.getIdOrNull()!!).shouldBeRight(updatedUser)
+        userRepository.findById(updatedUser.userId.id).shouldBeRight(updatedUser)
     }
 
     @Test
     fun `update returns failure when user does not exist`() {
         // given
-        val user = createRandomDefaultUser().copy(
-            userId = UUIDIdentity(UUID.randomUUID())
-        )
-
-        // when
-        val actual = userRepository.update(user)
-
-        // then
-        val failure = actual.shouldBeLeft().shouldBeTypeOf<Failure.NotFoundFailure>()
-        failure.message shouldBe "The user with email '${user.email.value}' does not exist."
-    }
-
-    @Test
-    fun `update returns failure when userId is not set`() {
-        // given
-        val user = createRandomDefaultUser()
+        val user = createRandomDefaultUser(UUID.randomUUID())
 
         // when
         val actual = userRepository.update(user)
@@ -106,7 +91,7 @@ class ExposedUserRepositoryTest : AnnotationSpec() {
     @Test
     fun `delete returns zero when user does not exist`() {
         // given
-        val user = createRandomDefaultUser()
+        val user = createRandomDefaultNewUser()
         userRepository.create(user)
 
         // when
@@ -119,11 +104,11 @@ class ExposedUserRepositoryTest : AnnotationSpec() {
     @Test
     fun `delete returns one when user exists`() {
         // given
-        val user = createRandomDefaultUser()
+        val user = createRandomDefaultNewUser()
         val persistedUser = userRepository.create(user).shouldBeRight()
 
         // when
-        val actual = userRepository.delete(persistedUser.userId.getIdOrNull()!!)
+        val actual = userRepository.delete(persistedUser.userId.id)
 
         // then
         actual.shouldBeRight(1)
@@ -132,8 +117,8 @@ class ExposedUserRepositoryTest : AnnotationSpec() {
     @Test
     fun `findById returns null when user does not exist`() {
         // given
-        val user = createRandomDefaultUser()
-        val persistedUser = userRepository.create(user).shouldBeRight()
+        val user = createRandomDefaultNewUser()
+        userRepository.create(user).shouldBeRight()
 
         // when
         val actual = userRepository.findById(UUID.randomUUID())
@@ -145,11 +130,11 @@ class ExposedUserRepositoryTest : AnnotationSpec() {
     @Test
     fun `findById returns matching user when exists`() {
         // given
-        val user = createRandomDefaultUser()
+        val user = createRandomDefaultNewUser()
         val persistedUser = userRepository.create(user).shouldBeRight()
 
         // when
-        val actual = userRepository.findById(persistedUser.userId.getIdOrNull()!!)
+        val actual = userRepository.findById(persistedUser.userId.id)
 
         // then
         actual.shouldBeRight(persistedUser)
@@ -158,7 +143,7 @@ class ExposedUserRepositoryTest : AnnotationSpec() {
     @Test
     fun `findByEmail returns matching user when exists`() {
         // given
-        val user = createRandomDefaultUser()
+        val user = createRandomDefaultNewUser()
         val persistedUser = userRepository.create(user).shouldBeRight()
 
         // when
@@ -171,8 +156,8 @@ class ExposedUserRepositoryTest : AnnotationSpec() {
     @Test
     fun `findByEmail returns null when user does not exist`() {
         // given
-        val user = createRandomDefaultUser()
-        val persistedUser = userRepository.create(user).shouldBeRight()
+        val user = createRandomDefaultNewUser()
+        userRepository.create(user).shouldBeRight()
 
         // when
         val actual = userRepository.findByEmail(Email.from("notExisting@mail.com").getOrNull()!!)

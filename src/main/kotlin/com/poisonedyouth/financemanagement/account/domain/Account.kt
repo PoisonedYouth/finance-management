@@ -1,7 +1,12 @@
 package com.poisonedyouth.financemanagement.account.domain
 
-import com.poisonedyouth.financemanagement.common.Identity
+import com.poisonedyouth.financemanagement.common.UUIDIdentity
 
 data class Account(
-    val id: Identity
+    val id: UUIDIdentity,
+    val name: String
+)
+
+data class NewAccount(
+    val name: String
 )

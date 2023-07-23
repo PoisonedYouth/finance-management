@@ -4,6 +4,7 @@ import com.poisonedyouth.financemanagement.account.port.AccountUseCase
 import com.poisonedyouth.financemanagement.account.port.NotificationService
 import com.poisonedyouth.financemanagement.account.service.AccountService
 import com.poisonedyouth.financemanagement.failure.Failure
+import com.poisonedyouth.financemanagement.user.port.NewUserDto
 import com.poisonedyouth.financemanagement.user.port.UserDto
 import com.poisonedyouth.financemanagement.user.port.UserRepository
 import com.poisonedyouth.financemanagement.user.port.UserUseCase
@@ -30,7 +31,7 @@ class UserServiceTest : AnnotationSpec() {
     @Test
     fun `create returns failure when user cannot be persisted`() {
         // given
-        val userDto = UserDto(
+        val userDto = NewUserDto(
             firstname = "Max",
             lastname = "Doe",
             email = "max.doe@mail.com"
@@ -47,8 +48,7 @@ class UserServiceTest : AnnotationSpec() {
     @Test
     fun `create returns persisted user when persistence is successful`() {
         // given
-        val userDto = UserDto(
-            userId = defaultUserId.toString(),
+        val userDto = NewUserDto(
             firstname = "Max",
             lastname = "Doe",
             email = defaultUserEmail.value
@@ -91,7 +91,7 @@ class UserServiceTest : AnnotationSpec() {
         )
 
         // when
-        val actual = userService.create(userDto)
+        val actual = userService.update(userDto)
 
         // then
         val persistedUserDto = actual.shouldBeRight()

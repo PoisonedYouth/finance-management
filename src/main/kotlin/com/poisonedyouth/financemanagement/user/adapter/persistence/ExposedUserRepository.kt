@@ -8,6 +8,7 @@ import com.poisonedyouth.financemanagement.failure.Failure
 import com.poisonedyouth.financemanagement.failure.eval
 import com.poisonedyouth.financemanagement.user.domain.Email
 import com.poisonedyouth.financemanagement.user.domain.Name
+import com.poisonedyouth.financemanagement.user.domain.NewUser
 import com.poisonedyouth.financemanagement.user.domain.User
 import com.poisonedyouth.financemanagement.user.port.UserRepository
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
@@ -22,22 +23,25 @@ import java.util.UUID
 class ExposedUserRepository : UserRepository {
     private val logger = LoggerFactory.getLogger(ExposedUserRepository::class.java)
 
-    override fun create(user: User): Either<Failure, User> = transaction {
+    override fun create(user: NewUser): Either<Failure, User> = transaction {
         eval(logger) {
             val id = UserTable.insertAndGetId {
                 it[firstname] = user.firstname.value
                 it[lastname] = user.lastname.value
                 it[email] = user.email.value
             }
-            user.copy(
-                userId = UUIDIdentity(id.value)
+            User(
+                userId = UUIDIdentity(id.value),
+                firstname = user.firstname,
+                lastname = user.lastname,
+                email = user.email
             )
         }
     }
 
     override fun update(user: User): Either<Failure, User> = transaction {
         val updateResult = eval(logger) {
-            UserTable.update({ UserTable.id eq user.userId.getIdOrNull() }) {
+            UserTable.update({ UserTable.id eq user.userId.id }) {
                 it[firstname] = user.firstname.value
                 it[lastname] = user.lastname.value
                 it[email] = user.email.value
