@@ -1,6 +1,9 @@
 package com.poisonedyouth.financemanagement.user.adapter.rest
 
+import com.poisonedyouth.financemanagement.util.basicAuthHeader
 import com.poisonedyouth.financemanagement.util.defaultUserId
+import com.poisonedyouth.financemanagement.util.extractUserId
+import com.poisonedyouth.financemanagement.util.userIdRegex
 import io.kotest.core.spec.style.AnnotationSpec
 import io.kotest.matchers.equals.shouldBeEqual
 import io.kotest.matchers.shouldBe
@@ -12,7 +15,6 @@ import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
-import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
@@ -21,7 +23,6 @@ import io.ktor.http.headers
 import io.ktor.http.parameters
 import io.ktor.server.config.ApplicationConfig
 import io.ktor.server.testing.testApplication
-import io.ktor.util.encodeBase64
 import java.util.UUID
 
 class UserRoutingKtTest : AnnotationSpec() {
@@ -295,6 +296,7 @@ class UserRoutingKtTest : AnnotationSpec() {
         // then
         result.status shouldBe HttpStatusCode.OK
         val resultBody = result.bodyAsText()
+        resultBody shouldContain (userIdRegex)
         resultBody shouldContain " \"firstname\" : \"Julia\","
         resultBody shouldContain " \"lastname\" : \"Doe\","
         resultBody shouldContain " \"email\" : \"julia.doe@mail.com"
@@ -323,19 +325,5 @@ class UserRoutingKtTest : AnnotationSpec() {
         // then
         result.status shouldBe HttpStatusCode.NotFound
         result.bodyAsText() shouldBeEqual "User with id '$userId' does not exist."
-    }
-
-    private suspend fun extractUserId(createdUserReponse: HttpResponse): String? {
-        val matcher = "userId\" : \"(\\w+-\\w+-\\w+-\\w+-\\w+)\"".toRegex()
-        val bodyText = createdUserReponse.bodyAsText()
-        print("Body:$bodyText")
-        return matcher.find(bodyText)?.groupValues?.get(1)
-    }
-
-    private fun basicAuthHeader(name: String, password: String): String {
-        val authString = "$name:$password"
-        val authBuf = authString.toByteArray(Charsets.UTF_8).encodeBase64()
-
-        return "Basic $authBuf"
     }
 }

@@ -46,6 +46,7 @@ dependencies {
     implementation("io.arrow-kt:arrow-core")
 
     implementation("org.postgresql:postgresql:42.6.0")
+    implementation("com.zaxxer:HikariCP:5.0.1")
 
     testImplementation("org.junit.jupiter:junit-jupiter-engine:$junit5Version")
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junit5Version")

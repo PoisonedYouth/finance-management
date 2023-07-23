@@ -1,17 +1,28 @@
 package com.poisonedyouth.financemanagement.plugins
 
 import com.poisonedyouth.financemanagement.user.adapter.persistence.UserTable
+import com.zaxxer.hikari.HikariConfig
+import com.zaxxer.hikari.HikariDataSource
 import io.ktor.server.application.Application
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.transactions.transaction
 
 fun Application.configureDatabases() {
     val databaseConfig = environment.config.config("ktor.database")
+
+    val config = HikariConfig()
+    config.driverClassName = databaseConfig.property("driver").getString()
+    config.jdbcUrl = databaseConfig.property("url").getString()
+    config.username = databaseConfig.property("username").getString()
+    config.password = databaseConfig.property("password").getString()
+    config.maximumPoolSize = 20
+    config.isAutoCommit = true
+    config.transactionIsolation = "TRANSACTION_REPEATABLE_READ"
+    config.validate()
+    val datasource = HikariDataSource(config)
+
     val database = Database.connect(
-        url = databaseConfig.property("url").getString(),
-        user = databaseConfig.property("user").getString(),
-        driver = databaseConfig.property("driver").getString(),
-        password = databaseConfig.property("password").getString()
+        datasource
     )
 
     transaction(database) {
