@@ -39,7 +39,6 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
     implementation("io.insert-koin:koin-ktor:$koinKtorVersion")
     implementation("io.insert-koin:koin-logger-slf4j:$koinKtorVersion")
-    implementation("com.h2database:h2:$h2Version")
     implementation("io.ktor:ktor-server-netty-jvm:$ktorVersion")
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation(platform("io.arrow-kt:arrow-stack:1.2.0-RC"))
@@ -48,6 +47,7 @@ dependencies {
     implementation("org.postgresql:postgresql:42.6.0")
     implementation("com.zaxxer:HikariCP:5.0.1")
 
+    testImplementation("com.h2database:h2:$h2Version")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:$junit5Version")
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junit5Version")
     testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
@@ -61,4 +61,8 @@ dependencies {
 
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
+}
+
+kotlin{
+    explicitApi()
 }

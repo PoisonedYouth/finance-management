@@ -11,21 +11,22 @@ import com.poisonedyouth.financemanagement.user.service.UserService
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import org.koin.core.KoinApplication
+import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
 
-fun KoinApplication.defaultModule() = modules(defaultModule)
-val defaultModule = module {
+public fun KoinApplication.defaultModule(): KoinApplication = modules(defaultModule)
+public val defaultModule: Module = module {
     singleOf(::ExposedUserRepository) bind UserRepository::class
     singleOf(::UserService) bind UserUseCase::class
     singleOf(::AccountService) bind AccountUseCase::class
     singleOf(::EmailNotificationService) bind NotificationService::class
 }
 
-fun Application.configureDependencyInjection() {
+public fun Application.configureDependencyInjection() {
     // Install Ktor features
     install(Koin) {
         slf4jLogger()

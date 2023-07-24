@@ -2,14 +2,14 @@ package com.poisonedyouth.financemanagement.user.domain
 
 import com.poisonedyouth.financemanagement.common.Identity
 
-data class User(
+public data class User(
     val userId: Identity,
     val firstname: Name,
     val lastname: Name,
     val email: Email
 )
 
-data class NewUser(
+public data class NewUser(
     val firstname: Name,
     val lastname: Name,
     val email: Email

@@ -6,7 +6,7 @@ import io.ktor.server.auth.Authentication
 import io.ktor.server.auth.UserIdPrincipal
 import io.ktor.server.auth.basic
 
-fun Application.configureSecurity() {
+public fun Application.configureSecurity() {
     install(Authentication) {
         basic("basic-auth") {
             realm = "basic-auth-realm"

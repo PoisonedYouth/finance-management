@@ -6,7 +6,7 @@ import com.poisonedyouth.financemanagement.account.port.Notification
 import com.poisonedyouth.financemanagement.account.port.NotificationService
 import com.poisonedyouth.financemanagement.failure.Failure
 
-class EmailNotificationService : NotificationService {
+public class EmailNotificationService : NotificationService {
     override fun notify(notification: Notification): Either<Failure, Unit> = either {
         println("Notify about $notification")
     }

@@ -9,9 +9,9 @@ import java.util.UUID
 private val logger = LoggerFactory.getLogger(Identity::class.java)
 
 @JvmInline
-value class Identity(val id: UUID) {
-    companion object {
-        fun resolveFromString(value: String): Either<Failure, Identity> {
+public value class Identity(public val id: UUID) {
+    public companion object {
+        public fun resolveFromString(value: String): Either<Failure, Identity> {
             return eval(logger) {
                 val uuid = UUID.fromString(value)
                 Identity(uuid)

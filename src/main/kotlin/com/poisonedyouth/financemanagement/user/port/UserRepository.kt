@@ -7,10 +7,10 @@ import com.poisonedyouth.financemanagement.user.domain.NewUser
 import com.poisonedyouth.financemanagement.user.domain.User
 import java.util.UUID
 
-interface UserRepository {
-    fun create(user: NewUser): Either<Failure, User>
-    fun update(user: User): Either<Failure, User>
-    fun delete(userId: UUID): Either<Failure, Int>
-    fun findById(userId: UUID): Either<Failure, User?>
-    fun findByEmail(email: Email): Either<Failure, User?>
+public interface UserRepository {
+    public fun create(user: NewUser): Either<Failure, User>
+    public fun update(user: User): Either<Failure, User>
+    public fun delete(userId: UUID): Either<Failure, Int>
+    public fun findById(userId: UUID): Either<Failure, User?>
+    public fun findByEmail(email: Email): Either<Failure, User?>
 }

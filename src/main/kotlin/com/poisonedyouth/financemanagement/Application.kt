@@ -7,11 +7,11 @@ import com.poisonedyouth.financemanagement.plugins.configureSerialization
 import com.poisonedyouth.financemanagement.user.adapter.rest.configureUserRouting
 import io.ktor.server.application.Application
 
-fun main(args: Array<String>): Unit =
+public fun main(args: Array<String>): Unit =
     io.ktor.server.netty.EngineMain.main(args)
 
 @Suppress("unused") // application.conf references the main function.
-fun Application.module() {
+public fun Application.module() {
     configureSecurity()
     configureDependencyInjection()
     configureSerialization()

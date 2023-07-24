@@ -4,14 +4,14 @@ import arrow.core.Either
 import com.poisonedyouth.financemanagement.failure.Failure
 import com.poisonedyouth.financemanagement.user.domain.Email
 
-interface NotificationService {
+public interface NotificationService {
 
-    fun notify(notification: Notification): Either<Failure, Unit>
+    public fun notify(notification: Notification): Either<Failure, Unit>
 }
 
-sealed interface Notification {
+public sealed interface Notification {
 
-    data class EmailNotification(
+    public data class EmailNotification(
         val email: Email
     ) : Notification
 }

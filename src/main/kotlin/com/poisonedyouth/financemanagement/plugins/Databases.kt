@@ -7,7 +7,7 @@ import io.ktor.server.application.Application
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.transactions.transaction
 
-fun Application.configureDatabases() {
+public fun Application.configureDatabases() {
     val databaseConfig = environment.config.config("ktor.database")
 
     val config = HikariConfig()

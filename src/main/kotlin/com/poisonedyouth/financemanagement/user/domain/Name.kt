@@ -5,14 +5,14 @@ import arrow.core.raise.either
 import arrow.core.raise.ensure
 import com.poisonedyouth.financemanagement.failure.Failure
 
-const val NAME_MIN_LENGTH = 3
-const val NAME_MAX_LENGTH = 20
+public const val NAME_MIN_LENGTH: Int = 3
+public const val NAME_MAX_LENGTH: Int = 20
 
 @JvmInline
-value class Name private constructor(val value: String) {
-    companion object {
+public value class Name private constructor(public val value: String) {
+    public companion object {
 
-        fun from(rawString: String): Either<Failure, Name> = either {
+        public fun from(rawString: String): Either<Failure, Name> = either {
             ensure(rawString.length in NAME_MIN_LENGTH..NAME_MAX_LENGTH) {
                 Failure.ValidationFailure(
                     "Name length must be between $NAME_MIN_LENGTH and $NAME_MAX_LENGTH but is ${rawString.length}"

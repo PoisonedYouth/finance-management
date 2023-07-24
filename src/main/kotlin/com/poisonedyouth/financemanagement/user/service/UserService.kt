@@ -18,7 +18,7 @@ import com.poisonedyouth.financemanagement.user.port.UserUseCase
 import org.slf4j.LoggerFactory
 import java.util.UUID
 
-class UserService(
+public class UserService(
     private val userRepository: UserRepository,
     private val accountUseCase: AccountUseCase
 ) : UserUseCase {

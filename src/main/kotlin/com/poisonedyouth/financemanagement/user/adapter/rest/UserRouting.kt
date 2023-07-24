@@ -19,7 +19,7 @@ import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 import org.koin.ktor.ext.inject
 
-suspend fun mapFailureToHttpResponse(call: ApplicationCall, failure: Failure) {
+public suspend fun mapFailureToHttpResponse(call: ApplicationCall, failure: Failure) {
     when (failure) {
         is Failure.ValidationFailure -> call.respond(HttpStatusCode.BadRequest, failure.message)
         is Failure.AlreadyExistFailure -> call.respond(HttpStatusCode.Conflict, failure.message)
@@ -28,7 +28,7 @@ suspend fun mapFailureToHttpResponse(call: ApplicationCall, failure: Failure) {
     }
 }
 
-fun Application.configureUserRouting() {
+public fun Application.configureUserRouting() {
     val userUseCase by inject<UserUseCase>()
 
     routing {

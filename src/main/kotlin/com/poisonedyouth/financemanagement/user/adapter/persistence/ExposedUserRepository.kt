@@ -20,7 +20,7 @@ import org.jetbrains.exposed.sql.update
 import org.slf4j.LoggerFactory
 import java.util.UUID
 
-class ExposedUserRepository : UserRepository {
+public class ExposedUserRepository : UserRepository {
     private val logger = LoggerFactory.getLogger(ExposedUserRepository::class.java)
 
     override fun create(user: NewUser): Either<Failure, User> = transaction {

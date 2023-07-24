@@ -8,7 +8,7 @@ import com.poisonedyouth.financemanagement.account.port.NotificationService
 import com.poisonedyouth.financemanagement.failure.Failure
 import com.poisonedyouth.financemanagement.user.domain.Email
 
-class AccountService(
+public class AccountService(
     private val notificationService: NotificationService
 ) : AccountUseCase {
     override fun triggerCreation(email: Email): Either<Failure, Unit> = either {
