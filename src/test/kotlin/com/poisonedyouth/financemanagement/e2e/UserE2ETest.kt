@@ -23,8 +23,10 @@ import io.ktor.http.parameters
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.testcontainers.junit.jupiter.Testcontainers
 
 @ExtendWith(KtorServerTestExtension::class)
+@Testcontainers
 class UserE2ETest {
 
     @Test

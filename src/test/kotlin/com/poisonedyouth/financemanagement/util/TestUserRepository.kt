@@ -13,13 +13,13 @@ import com.poisonedyouth.financemanagement.user.port.UserRepository
 import io.kotest.assertions.arrow.core.shouldBeRight
 import java.util.UUID
 
-val defaultUserId: UUID = UUID.fromString("85d374d2-440c-4db7-8db5-9f70e31b415e")
+val defaultUserId: Identity = Identity(UUID.fromString("85d374d2-440c-4db7-8db5-9f70e31b415e"))
 val defaultUserEmail: Email = Email.from("john.doe@mail.com").shouldBeRight()
 val duplicateUserEmail: Email = Email.from("not.doe@mail.com").shouldBeRight()
-val notExistingUserId: UUID = UUID.fromString("95d374d2-440c-4db7-8db5-9f70e31b415e")
+val notExistingUserId: Identity = Identity(UUID.fromString("95d374d2-440c-4db7-8db5-9f70e31b415e"))
 
 val defaultUser: User = User(
-    userId = Identity(defaultUserId),
+    userId = defaultUserId,
     firstname = Name.from("John").shouldBeRight(),
     lastname = Name.from("Doe").shouldBeRight(),
     email = defaultUserEmail
@@ -31,7 +31,7 @@ class TestUserRepository : UserRepository {
             Failure.GenericFailure(RuntimeException("Cannot persist '${user.email.value}'"))
         }
         User(
-            userId = Identity(defaultUserId),
+            userId = defaultUserId,
             firstname = user.firstname,
             lastname = user.lastname,
             email = user.email
@@ -45,16 +45,16 @@ class TestUserRepository : UserRepository {
         user
     }
 
-    override fun delete(userId: UUID): Either<Failure, Int> = either {
+    override fun delete(userId: Identity): Either<Failure, Int> = either {
         ensure(userId == defaultUserId || userId == notExistingUserId) {
-            Failure.GenericFailure(RuntimeException("Cannot delete '$userId'"))
+            Failure.GenericFailure(RuntimeException("Cannot delete '${userId.id}'"))
         }
         if (userId == notExistingUserId) 0 else 1
     }
 
-    override fun findById(userId: UUID): Either<Failure, User?> = either {
+    override fun findById(userId: Identity): Either<Failure, User?> = either {
         ensure(userId == defaultUserId || userId == notExistingUserId) {
-            Failure.GenericFailure(RuntimeException("Cannot find '$userId'"))
+            Failure.GenericFailure(RuntimeException("Cannot find '${userId.id}'"))
         }
         if (userId == notExistingUserId) null else defaultUser
     }

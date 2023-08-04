@@ -200,7 +200,7 @@ class UserRoutingKtTest : AnnotationSpec() {
         }
 
         // given
-        val userId = defaultUserId
+        val userId = defaultUserId.id
 
         // when
         val result = client.delete("/api/v1/user") {
@@ -215,7 +215,7 @@ class UserRoutingKtTest : AnnotationSpec() {
 
         // then
         result.status shouldBe HttpStatusCode.NotFound
-        result.bodyAsText() shouldBeEqual "User with id '$defaultUserId' does not exist."
+        result.bodyAsText() shouldBeEqual "User with id '${defaultUserId.id}' does not exist."
     }
 
     @Test

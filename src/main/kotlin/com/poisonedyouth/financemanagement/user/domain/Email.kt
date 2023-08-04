@@ -11,7 +11,6 @@ private val validEmailPattern = Pattern.compile("^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2
 @JvmInline
 public value class Email private constructor(public val value: String) {
     public companion object {
-
         public fun from(rawString: String): Either<Failure, Email> = either {
             ensure(validEmailPattern.matcher(rawString).matches()) {
                 Failure.ValidationFailure("The given string '$rawString' is not a valid email.")

@@ -1,5 +1,6 @@
 package com.poisonedyouth.financemanagement.user.adapter.persistence
 
+import com.poisonedyouth.financemanagement.common.Identity
 import com.poisonedyouth.financemanagement.failure.Failure
 import com.poisonedyouth.financemanagement.user.domain.Email
 import com.poisonedyouth.financemanagement.util.createRandomDefaultNewUser
@@ -51,7 +52,7 @@ class ExposedUserRepositoryTestcontainersTest : AnnotationSpec() {
         persistedUser.firstname shouldBe user.firstname
         persistedUser.lastname shouldBe user.lastname
         persistedUser.email shouldBe user.email
-        userRepository.findById(persistedUser.userId.id).shouldBeRight(persistedUser)
+        userRepository.findById(persistedUser.userId).shouldBeRight(persistedUser)
     }
 
     @Test
@@ -85,7 +86,7 @@ class ExposedUserRepositoryTestcontainersTest : AnnotationSpec() {
         val updatedUser = actual.shouldBeRight()
         updatedUser.userId shouldBe existingUser.userId
         updatedUser.email shouldNotBe existingUser.email
-        userRepository.findById(updatedUser.userId.id).shouldBeRight(updatedUser)
+        userRepository.findById(updatedUser.userId).shouldBeRight(updatedUser)
     }
 
     @Test
@@ -108,7 +109,7 @@ class ExposedUserRepositoryTestcontainersTest : AnnotationSpec() {
         userRepository.create(user)
 
         // when
-        val actual = userRepository.delete(UUID.randomUUID())
+        val actual = userRepository.delete(Identity(UUID.randomUUID()))
 
         // then
         actual.shouldBeRight(0)
@@ -121,7 +122,7 @@ class ExposedUserRepositoryTestcontainersTest : AnnotationSpec() {
         val persistedUser = userRepository.create(user).shouldBeRight()
 
         // when
-        val actual = userRepository.delete(persistedUser.userId.id)
+        val actual = userRepository.delete(persistedUser.userId)
 
         // then
         actual.shouldBeRight(1)
@@ -134,7 +135,7 @@ class ExposedUserRepositoryTestcontainersTest : AnnotationSpec() {
         userRepository.create(user).shouldBeRight()
 
         // when
-        val actual = userRepository.findById(UUID.randomUUID())
+        val actual = userRepository.findById(Identity(UUID.randomUUID()))
 
         // then
         actual.shouldBeRight(null)
@@ -147,7 +148,7 @@ class ExposedUserRepositoryTestcontainersTest : AnnotationSpec() {
         val persistedUser = userRepository.create(user).shouldBeRight()
 
         // when
-        val actual = userRepository.findById(persistedUser.userId.id)
+        val actual = userRepository.findById(persistedUser.userId)
 
         // then
         actual.shouldBeRight(persistedUser)

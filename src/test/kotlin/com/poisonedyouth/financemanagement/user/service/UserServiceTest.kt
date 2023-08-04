@@ -59,14 +59,14 @@ class UserServiceTest : AnnotationSpec() {
 
         // then
         val userId = actual.shouldBeRight()
-        userId shouldBe defaultUserId.toString()
+        userId shouldBe defaultUserId.id.toString()
     }
 
     @Test
     fun `update returns failure when user cannot be persisted`() {
         // given
         val userDto = UserDto(
-            userId = defaultUserId.toString(),
+            userId = defaultUserId.id.toString(),
             firstname = "Max",
             lastname = "Doe",
             email = "max.doe@mail.com"
@@ -84,7 +84,7 @@ class UserServiceTest : AnnotationSpec() {
     fun `update returns updated user when persistence is successful`() {
         // given
         val userDto = UserDto(
-            userId = defaultUserId.toString(),
+            userId = defaultUserId.id.toString(),
             firstname = "Max",
             lastname = "Doe",
             email = defaultUserEmail.value
@@ -126,7 +126,7 @@ class UserServiceTest : AnnotationSpec() {
     @Test
     fun `delete returns amount of deleted user when deletion is successful`() {
         // given
-        val userId = defaultUserId.toString()
+        val userId = defaultUserId.id.toString()
 
         // when
         val actual = userService.delete(userId)
@@ -139,7 +139,7 @@ class UserServiceTest : AnnotationSpec() {
     @Test
     fun `delete returns failure when user does not exist in database`() {
         // given
-        val userId = notExistingUserId.toString()
+        val userId = notExistingUserId.id.toString()
 
         // when
         val actual = userService.delete(userId)
@@ -165,7 +165,7 @@ class UserServiceTest : AnnotationSpec() {
     @Test
     fun `findById returns null when given user does not exist`() {
         // given
-        val userId = notExistingUserId.toString()
+        val userId = notExistingUserId.id.toString()
 
         // when
         val actual = userService.findById(userId)
@@ -178,7 +178,7 @@ class UserServiceTest : AnnotationSpec() {
     @Test
     fun `findById returns userDto when given user exist`() {
         // given
-        val userId = defaultUserId.toString()
+        val userId = defaultUserId.id.toString()
 
         // when
         val actual = userService.findById(userId)
@@ -186,7 +186,7 @@ class UserServiceTest : AnnotationSpec() {
         // then
         val existingUser = actual.shouldBeRight()
         existingUser shouldBe UserDto(
-            userId = defaultUserId.toString(),
+            userId = defaultUserId.id.toString(),
             firstname = defaultUser.firstname.value,
             lastname = defaultUser.lastname.value,
             email = defaultUser.email.value

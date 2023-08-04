@@ -18,7 +18,6 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
 import org.slf4j.LoggerFactory
-import java.util.UUID
 
 public class ExposedUserRepository : UserRepository {
     private val logger = LoggerFactory.getLogger(ExposedUserRepository::class.java)
@@ -55,22 +54,22 @@ public class ExposedUserRepository : UserRepository {
         }
     }
 
-    override fun delete(userId: UUID): Either<Failure, Int> = transaction {
+    override fun delete(userId: Identity): Either<Failure, Int> = transaction {
         eval(logger) {
-            UserTable.deleteWhere { UserTable.id eq userId }
+            UserTable.deleteWhere { UserTable.id eq userId.id }
         }
     }
 
-    override fun findById(userId: UUID): Either<Failure, User?> = transaction {
+    override fun findById(userId: Identity): Either<Failure, User?> = transaction {
         either {
             eval(logger) {
-                UserTable.select { UserTable.id eq userId }.firstOrNull()
+                UserTable.select { UserTable.id eq userId.id }.firstOrNull()
             }.bind()?.let {
                 User(
                     userId = Identity(it[UserTable.id].value),
                     firstname = Name.from(it[UserTable.firstname]).bind(),
                     lastname = Name.from(it[UserTable.lastname]).bind(),
-                    email = Email.from(it[UserTable.email]).bind()
+                    email = Email.from(it[UserTable.email]).mapLeft { Failure.ValidationFailure(it.message) }.bind()
                 )
             }
         }
@@ -85,7 +84,7 @@ public class ExposedUserRepository : UserRepository {
                     userId = Identity(it[UserTable.id].value),
                     firstname = Name.from(it[UserTable.firstname]).bind(),
                     lastname = Name.from(it[UserTable.lastname]).bind(),
-                    email = Email.from(it[UserTable.email]).bind()
+                    email = Email.from(it[UserTable.email]).mapLeft { Failure.ValidationFailure(it.message) }.bind()
                 )
             }
         }

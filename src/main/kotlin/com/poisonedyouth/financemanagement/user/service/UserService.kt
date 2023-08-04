@@ -45,7 +45,7 @@ public class UserService(
 
     override fun delete(userId: String): Either<Failure, Int> = either {
         val existingUserId = mapToUUID(userId).bind()
-        val deletedAmount = userRepository.delete(existingUserId).bind()
+        val deletedAmount = userRepository.delete(Identity(existingUserId)).bind()
         ensure(deletedAmount != 0) {
             Failure.NotFoundFailure("User with id '$userId' does not exist.")
         }
@@ -54,7 +54,7 @@ public class UserService(
 
     override fun findById(userId: String): Either<Failure, UserDto?> = either {
         val existingUserId = mapToUUID(userId).bind()
-        userRepository.findById(existingUserId).bind()?.toUserDto()?.bind()
+        userRepository.findById(Identity(existingUserId)).bind()?.toUserDto()?.bind()
     }
 
     private fun mapToUUID(userId: String) = eval(logger) {
@@ -66,7 +66,7 @@ public class UserService(
             userId = Identity.resolveFromString(userDto.userId).bind(),
             firstname = Name.from(userDto.firstname).bind(),
             lastname = Name.from(userDto.lastname).bind(),
-            email = Email.from(userDto.email).bind()
+            email = Email.from(userDto.email).mapLeft { Failure.ValidationFailure(it.message) }.bind()
         )
     }
 
