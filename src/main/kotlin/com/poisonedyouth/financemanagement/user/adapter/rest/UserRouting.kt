@@ -28,6 +28,7 @@ public suspend fun mapFailureToHttpResponse(call: ApplicationCall, failure: Fail
     }
 }
 
+@SuppressWarnings("LongMethod")
 public fun Application.configureUserRouting() {
     val userUseCase by inject<UserUseCase>()
 
@@ -42,7 +43,6 @@ public fun Application.configureUserRouting() {
                         status = HttpStatusCode.Created,
                         message = mapOf(
                             "userId" to it,
-                            "password" to "password"
                         )
                     )
                 }

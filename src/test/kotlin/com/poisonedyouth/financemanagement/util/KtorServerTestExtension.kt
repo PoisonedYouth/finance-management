@@ -5,8 +5,6 @@ import com.github.dockerjava.api.model.PortBinding
 import com.github.dockerjava.api.model.Ports
 import com.poisonedyouth.financemanagement.user.adapter.persistence.MyPostgreSQLContainer
 import io.ktor.server.config.ApplicationConfig
-import io.ktor.server.config.HoconApplicationConfig
-import io.ktor.server.config.mergeWith
 import io.ktor.server.engine.applicationEngineEnvironment
 import io.ktor.server.engine.connector
 import io.ktor.server.engine.embeddedServer

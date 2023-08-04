@@ -1,9 +1,9 @@
 package com.poisonedyouth.financemanagement.user.service
 
-import com.poisonedyouth.financemanagement.account.port.AccountUseCase
-import com.poisonedyouth.financemanagement.account.port.NotificationService
-import com.poisonedyouth.financemanagement.account.service.AccountService
 import com.poisonedyouth.financemanagement.failure.Failure
+import com.poisonedyouth.financemanagement.notification.port.NotificationService
+import com.poisonedyouth.financemanagement.security.port.UserSecurityUseCase
+import com.poisonedyouth.financemanagement.security.service.UserSecurityService
 import com.poisonedyouth.financemanagement.user.port.NewUserDto
 import com.poisonedyouth.financemanagement.user.port.UserDto
 import com.poisonedyouth.financemanagement.user.port.UserRepository
@@ -25,7 +25,7 @@ class UserServiceTest : AnnotationSpec() {
 
     private val userRepository: UserRepository = TestUserRepository()
     private val notificationService: NotificationService = TestNotificationService()
-    private val accountUseCase: AccountUseCase = AccountService(notificationService)
+    private val accountUseCase: UserSecurityUseCase = UserSecurityService(notificationService)
     private val userService: UserUseCase = UserService(userRepository, accountUseCase)
 
     @Test

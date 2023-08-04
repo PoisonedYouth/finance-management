@@ -77,7 +77,6 @@ class UserE2ETest {
         resultBody shouldContain " \"email\" : \"hans.schmitt@mail.com"
     }
 
-
     private fun createHttpClient(): HttpClient {
         val client = HttpClient(CIO) {
         }

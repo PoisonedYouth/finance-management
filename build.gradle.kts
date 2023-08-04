@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 val ktorVersion: String by project
 val kotlinVersion: String by project
 val logbackVersion: String by project
@@ -46,8 +48,8 @@ dependencies {
 
     implementation("org.postgresql:postgresql:42.6.0")
     implementation("com.zaxxer:HikariCP:5.0.1")
+    implementation("com.h2database:h2:$h2Version")
 
-    testImplementation("com.h2database:h2:$h2Version")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:$junit5Version")
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junit5Version")
     testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
@@ -63,6 +65,17 @@ tasks.withType<Test>().configureEach {
     useJUnitPlatform()
 }
 
-kotlin{
+tasks
+    .withType<org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile>()
+    .configureEach {
+        compilerOptions
+            .languageVersion
+            .set(
+                org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_1_9
+            )
+        compilerOptions.jvmTarget.set(JvmTarget.JVM_17)
+    }
+
+kotlin {
     explicitApi()
 }

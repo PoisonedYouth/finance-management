@@ -7,6 +7,8 @@ import io.ktor.server.application.Application
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.transactions.transaction
 
+private const val MAXIMUM_POOL_SIZE = 20
+
 public fun Application.configureDatabases() {
     val databaseConfig = environment.config.config("ktor.database")
 
@@ -15,7 +17,7 @@ public fun Application.configureDatabases() {
     config.jdbcUrl = databaseConfig.property("url").getString()
     config.username = databaseConfig.property("username").getString()
     config.password = databaseConfig.property("password").getString()
-    config.maximumPoolSize = 20
+    config.maximumPoolSize = MAXIMUM_POOL_SIZE
     config.isAutoCommit = true
     config.transactionIsolation = "TRANSACTION_REPEATABLE_READ"
     config.validate()

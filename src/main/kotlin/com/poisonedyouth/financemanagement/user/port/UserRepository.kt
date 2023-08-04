@@ -6,7 +6,6 @@ import com.poisonedyouth.financemanagement.failure.Failure
 import com.poisonedyouth.financemanagement.user.domain.Email
 import com.poisonedyouth.financemanagement.user.domain.NewUser
 import com.poisonedyouth.financemanagement.user.domain.User
-import java.util.UUID
 
 public interface UserRepository {
     public fun create(user: NewUser): Either<Failure, User>

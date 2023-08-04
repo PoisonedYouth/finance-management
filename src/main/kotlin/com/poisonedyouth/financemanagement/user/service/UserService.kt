@@ -3,10 +3,10 @@ package com.poisonedyouth.financemanagement.user.service
 import arrow.core.Either
 import arrow.core.raise.either
 import arrow.core.raise.ensure
-import com.poisonedyouth.financemanagement.account.port.AccountUseCase
 import com.poisonedyouth.financemanagement.common.Identity
 import com.poisonedyouth.financemanagement.failure.Failure
 import com.poisonedyouth.financemanagement.failure.eval
+import com.poisonedyouth.financemanagement.security.port.UserSecurityUseCase
 import com.poisonedyouth.financemanagement.user.domain.Email
 import com.poisonedyouth.financemanagement.user.domain.Name
 import com.poisonedyouth.financemanagement.user.domain.NewUser
@@ -20,7 +20,7 @@ import java.util.UUID
 
 public class UserService(
     private val userRepository: UserRepository,
-    private val accountUseCase: AccountUseCase
+    private val securityUseCase: UserSecurityUseCase
 ) : UserUseCase {
     private val logger = LoggerFactory.getLogger(UserService::class.java)
 
@@ -33,7 +33,7 @@ public class UserService(
         }
 
         val persistedUser = userRepository.create(user.bind()).bind()
-        accountUseCase.triggerCreation(persistedUser.email)
+        securityUseCase.triggerCreation(persistedUser.userId)
         persistedUser.userId.id.toString()
     }
 

@@ -18,7 +18,6 @@ suspend fun extractPassword(response: HttpResponse): String {
     return passwordRegex.find(bodyText)?.groupValues?.get(1) ?: fail("Password not found in response.")
 }
 
-
 fun basicAuthHeader(name: String, password: String): String {
     val authString = "$name:$password"
     val authBuf = authString.toByteArray(Charsets.UTF_8).encodeBase64()
