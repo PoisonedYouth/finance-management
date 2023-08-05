@@ -12,6 +12,8 @@ public sealed interface Failure {
 
     public data class AlreadyExistFailure(override val message: String) : Failure
 
+    public data class AuthenticationFailure(override val message: String): Failure
+
     public data class GenericFailure(val e: Throwable) : Failure {
         override val message: String = e.message ?: "Unknown error occurred"
     }

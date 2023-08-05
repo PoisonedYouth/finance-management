@@ -2,6 +2,7 @@ package com.poisonedyouth.financemanagement.user.service
 
 import com.poisonedyouth.financemanagement.failure.Failure
 import com.poisonedyouth.financemanagement.notification.port.NotificationService
+import com.poisonedyouth.financemanagement.security.port.UserCredentialsRepository
 import com.poisonedyouth.financemanagement.security.port.UserSecurityUseCase
 import com.poisonedyouth.financemanagement.security.service.UserSecurityService
 import com.poisonedyouth.financemanagement.user.port.NewUserDto
@@ -9,6 +10,7 @@ import com.poisonedyouth.financemanagement.user.port.UserDto
 import com.poisonedyouth.financemanagement.user.port.UserRepository
 import com.poisonedyouth.financemanagement.user.port.UserUseCase
 import com.poisonedyouth.financemanagement.util.TestNotificationService
+import com.poisonedyouth.financemanagement.util.TestUserCredentialsRepository
 import com.poisonedyouth.financemanagement.util.TestUserRepository
 import com.poisonedyouth.financemanagement.util.defaultUser
 import com.poisonedyouth.financemanagement.util.defaultUserEmail
@@ -25,7 +27,9 @@ class UserServiceTest : AnnotationSpec() {
 
     private val userRepository: UserRepository = TestUserRepository()
     private val notificationService: NotificationService = TestNotificationService()
-    private val accountUseCase: UserSecurityUseCase = UserSecurityService(notificationService)
+    private val userCredentialsRepository: UserCredentialsRepository = TestUserCredentialsRepository()
+    private val accountUseCase: UserSecurityUseCase =
+        UserSecurityService(notificationService, userCredentialsRepository)
     private val userService: UserUseCase = UserService(userRepository, accountUseCase)
 
     @Test

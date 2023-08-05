@@ -8,7 +8,9 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.call
+import io.ktor.server.auth.UserIdPrincipal
 import io.ktor.server.auth.authenticate
+import io.ktor.server.auth.principal
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.delete
@@ -24,6 +26,7 @@ public suspend fun mapFailureToHttpResponse(call: ApplicationCall, failure: Fail
         is Failure.ValidationFailure -> call.respond(HttpStatusCode.BadRequest, failure.message)
         is Failure.AlreadyExistFailure -> call.respond(HttpStatusCode.Conflict, failure.message)
         is Failure.NotFoundFailure -> call.respond(HttpStatusCode.NotFound, failure.message)
+        is Failure.AuthenticationFailure -> call.respond(HttpStatusCode.Unauthorized, failure.message)
         else -> call.respond(HttpStatusCode.InternalServerError, failure.message)
     }
 }
@@ -61,7 +64,7 @@ public fun Application.configureUserRouting() {
                         }
                 }
                 delete {
-                    val userId = call.parameters["userId"] ?: ""
+                    val userId = call.principal<UserIdPrincipal>()!!.name
                     userUseCase.delete(userId)
                         .fold(
                             { failure -> mapFailureToHttpResponse(call, failure) }
@@ -73,7 +76,7 @@ public fun Application.configureUserRouting() {
                         }
                 }
                 get {
-                    val userId = call.parameters["userId"] ?: ""
+                    val userId = call.principal<UserIdPrincipal>()!!.name
                     userUseCase.findById(userId)
                         .fold(
                             { failure -> mapFailureToHttpResponse(call, failure) }

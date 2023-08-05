@@ -1,5 +1,6 @@
 package com.poisonedyouth.financemanagement.plugins
 
+import com.poisonedyouth.financemanagement.security.adapter.persistence.UserCredentialsTable
 import com.poisonedyouth.financemanagement.user.adapter.persistence.UserTable
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
@@ -29,5 +30,6 @@ public fun Application.configureDatabases() {
 
     transaction(database) {
         UserTable.initTable()
+        UserCredentialsTable.initTable()
     }
 }

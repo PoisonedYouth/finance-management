@@ -4,7 +4,9 @@ import com.poisonedyouth.financemanagement.account.port.AccountUseCase
 import com.poisonedyouth.financemanagement.account.service.AccountService
 import com.poisonedyouth.financemanagement.notification.port.NotificationService
 import com.poisonedyouth.financemanagement.notification.service.UserCredentialsService
+import com.poisonedyouth.financemanagement.security.port.UserCredentialsRepository
 import com.poisonedyouth.financemanagement.security.port.UserSecurityUseCase
+import com.poisonedyouth.financemanagement.security.adapter.persistence.ExposedUserCredentialsRepository
 import  com.poisonedyouth.financemanagement.security.service.UserSecurityService
 import com.poisonedyouth.financemanagement.user.adapter.persistence.ExposedUserRepository
 import com.poisonedyouth.financemanagement.user.port.UserRepository
@@ -27,6 +29,7 @@ public val defaultModule: Module = module {
     singleOf(::AccountService) bind AccountUseCase::class
     singleOf(::UserSecurityService) bind UserSecurityUseCase::class
     singleOf(::UserCredentialsService) bind NotificationService::class
+    singleOf(::ExposedUserCredentialsRepository) bind UserCredentialsRepository::class
 }
 
 public fun Application.configureDependencyInjection() {
