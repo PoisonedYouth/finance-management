@@ -18,7 +18,7 @@ public class UserSecurityService(
     private val userCredentialsRepository: UserCredentialsRepository
 ) : UserSecurityUseCase {
     override fun triggerCreation(userId: Identity): Either<Failure, Unit> = either {
-        val password = "passw0rd"
+        val password = PasswordManager.createRandomPassword()
         userCredentialsRepository.create(
             UserCredentials(
                 userId = userId,
@@ -47,6 +47,6 @@ public class UserSecurityService(
         ensureNotNull(existingUserCredentials) {
             Failure.NotFoundFailure("For userId ${userCredentials.userId} no credentials found.")
         }
-        PasswordManager.validateCredentials(userCredentials.toUserCredentials().bind(), existingUserCredentials)
+        PasswordManager.validateCredentials(userCredentials.toUserCredentials().bind(), existingUserCredentials).bind()
     }
 }

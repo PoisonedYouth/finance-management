@@ -6,7 +6,7 @@ import com.poisonedyouth.financemanagement.failure.Failure
 import com.poisonedyouth.financemanagement.security.domain.UserCredentials
 import com.poisonedyouth.financemanagement.security.port.UserCredentialsRepository
 
-class TestUserCredentialsRepository: UserCredentialsRepository {
+class TestUserCredentialsRepository : UserCredentialsRepository {
     override fun create(userCredentials: UserCredentials): Either<Failure, UserCredentials> {
         TODO("Not yet implemented")
     }
