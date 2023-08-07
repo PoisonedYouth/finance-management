@@ -1,7 +1,12 @@
 package com.poisonedyouth.financemanagement.user.adapter.rest
 
+import ch.qos.logback.classic.Logger
+import ch.qos.logback.classic.spi.ILoggingEvent
+import ch.qos.logback.core.read.ListAppender
+import com.poisonedyouth.financemanagement.notification.service.UserCredentialsService
 import com.poisonedyouth.financemanagement.util.basicAuthHeader
 import com.poisonedyouth.financemanagement.util.defaultUserId
+import com.poisonedyouth.financemanagement.util.extractPassword
 import com.poisonedyouth.financemanagement.util.extractUserId
 import com.poisonedyouth.financemanagement.util.userIdRegex
 import io.kotest.core.spec.style.AnnotationSpec
@@ -23,9 +28,28 @@ import io.ktor.http.headers
 import io.ktor.http.parameters
 import io.ktor.server.config.ApplicationConfig
 import io.ktor.server.testing.testApplication
+import org.slf4j.LoggerFactory
 import java.util.UUID
 
+
 class UserRoutingKtTest : AnnotationSpec() {
+
+    private val logAppender = ListAppender<ILoggingEvent>()
+
+    @BeforeEach
+    fun addLogAppender() {
+        val logger = LoggerFactory.getLogger(UserCredentialsService::class.java) as Logger
+        logAppender.list.clear()
+        logAppender.start()
+        logger.addAppender(logAppender)
+    }
+
+    @AfterEach
+    fun removeLogAppender(){
+        val logger = LoggerFactory.getLogger(UserCredentialsService::class.java) as Logger
+        logAppender.stop()
+        logger.detachAppender(logAppender.name)
+    }
 
     @Test
     fun `post request is adding new user`() = testApplication {
@@ -52,7 +76,6 @@ class UserRoutingKtTest : AnnotationSpec() {
 
         // then
         result.status shouldBe HttpStatusCode.Created
-        result.bodyAsText() shouldContain "\"password\" :"
         result.bodyAsText() shouldContain "\"userId\" :"
     }
 
@@ -91,34 +114,6 @@ class UserRoutingKtTest : AnnotationSpec() {
     }
 
     @Test
-    fun `put request is returning failure when user is not authorized`() = testApplication {
-        environment {
-            config = ApplicationConfig("application-test.conf")
-        }
-
-        // given
-        val body = """
-                    {
-                        "userId": "${UUID.randomUUID()}",
-                        "firstname": "John",
-                        "lastname": "Doe",
-                        "email": "john.doe@mail.com"
-                    }
-        """.trimIndent()
-
-        // when
-        val result = client.put("/api/v1/user") {
-            setBody(body)
-            headers {
-                header(HttpHeaders.ContentType, ContentType.Application.Json)
-            }
-        }
-
-        // then
-        result.status shouldBe HttpStatusCode.Unauthorized
-    }
-
-    @Test
     fun `put request is returning failure when user does not exist`() = testApplication {
         environment {
             config = ApplicationConfig("application-test.conf")
@@ -144,8 +139,7 @@ class UserRoutingKtTest : AnnotationSpec() {
         }
 
         // then
-        result.status shouldBe HttpStatusCode.NotFound
-        result.bodyAsText() shouldBeEqual "The user with email 'john.doe@mail.com' does not exist."
+        result.status shouldBe HttpStatusCode.Unauthorized
     }
 
     @Test
@@ -171,6 +165,8 @@ class UserRoutingKtTest : AnnotationSpec() {
         }
         val userId = extractUserId(createdUserResponse)
 
+        val logMessage = logAppender.list.first { it.formattedMessage.startsWith("New UserCredentials created") }
+
         // when
         val updatedBody = """
                     {
@@ -184,7 +180,7 @@ class UserRoutingKtTest : AnnotationSpec() {
             setBody(updatedBody)
             headers {
                 header(HttpHeaders.ContentType, ContentType.Application.Json)
-                header(HttpHeaders.Authorization, basicAuthHeader("Max", "password"))
+                header(HttpHeaders.Authorization, basicAuthHeader(userId, extractPassword(logMessage.formattedMessage)))
             }
         }
 
@@ -214,8 +210,7 @@ class UserRoutingKtTest : AnnotationSpec() {
         }
 
         // then
-        result.status shouldBe HttpStatusCode.NotFound
-        result.bodyAsText() shouldBeEqual "User with id '${defaultUserId.id}' does not exist."
+        result.status shouldBe HttpStatusCode.Unauthorized
     }
 
     @Test
@@ -234,22 +229,21 @@ class UserRoutingKtTest : AnnotationSpec() {
         """.trimIndent()
 
         // when
-        val createdUserReponse = client.post("/api/v1/user") {
+        val createdUserResponse = client.post("/api/v1/user") {
             setBody(body)
             headers {
                 header(HttpHeaders.ContentType, ContentType.Application.Json)
             }
         }
-        val userId = extractUserId(createdUserReponse)
+        val userId = extractUserId(createdUserResponse)
+
+        val logMessage = logAppender.list.first { it.formattedMessage.startsWith("New UserCredentials created") }
 
         // when
         val result = client.delete("/api/v1/user") {
-            parameters {
-                parameter("userId", userId)
-            }
             headers {
                 header(HttpHeaders.ContentType, ContentType.Application.Json)
-                header(HttpHeaders.Authorization, basicAuthHeader("John", "password"))
+                header(HttpHeaders.Authorization, basicAuthHeader(userId, extractPassword(logMessage.formattedMessage)))
             }
         }
 
@@ -282,14 +276,13 @@ class UserRoutingKtTest : AnnotationSpec() {
         }
         val userId = extractUserId(createdUserReponse)
 
+        val logMessage = logAppender.list.first { it.formattedMessage.startsWith("New UserCredentials created") }
+
         // when
         val result = client.get("/api/v1/user") {
-            parameters {
-                parameter("userId", userId)
-            }
             headers {
                 header(HttpHeaders.ContentType, ContentType.Application.Json)
-                header(HttpHeaders.Authorization, basicAuthHeader("John", "password"))
+                header(HttpHeaders.Authorization, basicAuthHeader(userId, extractPassword(logMessage.formattedMessage)))
             }
         }
 
@@ -323,7 +316,6 @@ class UserRoutingKtTest : AnnotationSpec() {
         }
 
         // then
-        result.status shouldBe HttpStatusCode.NotFound
-        result.bodyAsText() shouldBeEqual "User with id '$userId' does not exist."
+        result.status shouldBe HttpStatusCode.Unauthorized
     }
 }

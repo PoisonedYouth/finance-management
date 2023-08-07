@@ -5,9 +5,13 @@ import arrow.core.raise.either
 import com.poisonedyouth.financemanagement.failure.Failure
 import com.poisonedyouth.financemanagement.notification.domain.Notification
 import com.poisonedyouth.financemanagement.notification.port.NotificationService
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 public class UserCredentialsService : NotificationService {
+    private val logger: Logger = LoggerFactory.getLogger(UserCredentialsService::class.java)
+
     override fun notify(notification: Notification): Either<Failure, Unit> = either {
-        println("New UserCredentials created: $notification")
+        logger.info("New UserCredentials created: $notification")
     }
 }
