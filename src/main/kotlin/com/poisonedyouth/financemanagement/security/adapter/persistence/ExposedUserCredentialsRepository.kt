@@ -8,10 +8,6 @@ import com.poisonedyouth.financemanagement.failure.Failure
 import com.poisonedyouth.financemanagement.failure.eval
 import com.poisonedyouth.financemanagement.security.domain.UserCredentials
 import com.poisonedyouth.financemanagement.security.port.UserCredentialsRepository
-import com.poisonedyouth.financemanagement.user.adapter.persistence.UserTable
-import com.poisonedyouth.financemanagement.user.domain.Email
-import com.poisonedyouth.financemanagement.user.domain.Name
-import com.poisonedyouth.financemanagement.user.domain.User
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert

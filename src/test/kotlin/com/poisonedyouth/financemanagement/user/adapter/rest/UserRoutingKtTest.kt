@@ -31,7 +31,6 @@ import io.ktor.server.testing.testApplication
 import org.slf4j.LoggerFactory
 import java.util.UUID
 
-
 class UserRoutingKtTest : AnnotationSpec() {
 
     private val logAppender = ListAppender<ILoggingEvent>()
@@ -45,7 +44,7 @@ class UserRoutingKtTest : AnnotationSpec() {
     }
 
     @AfterEach
-    fun removeLogAppender(){
+    fun removeLogAppender() {
         val logger = LoggerFactory.getLogger(UserCredentialsService::class.java) as Logger
         logAppender.stop()
         logger.detachAppender(logAppender.name)

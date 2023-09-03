@@ -1,0 +1,62 @@
+[versions]
+archUnitVersion = "1.0.1"
+arrowStackVersion = "1.2.0"
+detektVersion = "1.23.1"
+exposedVersion = "0.43.0"
+h2Version = "2.1.212"
+hikariVersion = "5.0.1"
+# @keep is used for project setup
+jdkVersion = "17"
+junit5Version = "5.10.0"
+koinKtorVersion = "3.4.0"
+kotestArrowVersion = "1.3.3"
+kotestVersion = "5.6.2"
+kotlinVersion = "1.9.0"
+ktlintVersion = "11.5.1"
+ktorVersion = "2.3.2"
+logbackVersion = "1.4.11"
+mockitoKotlinVersion = "5.1.0"
+pitestJunit5Version = "1.2.0"
+pitestVersion = "1.9.11"
+postgresqlVersion = "42.6.0"
+testcontainersVersion = "1.18.3"
+versionCatalogUpdateVersion = "0.8.1"
+versionUpdateVersion = "0.47.0"
+
+[libraries]
+archUnitJunit5 = { module = "com.tngtech.archunit:archunit-junit5", version.ref = "archUnitVersion" }
+arrowCore = { module = "io.arrow-kt:arrow-core" }
+arrowStack = { module = "io.arrow-kt:arrow-stack", version.ref = "arrowStackVersion" }
+detektFormatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detektVersion" }
+exposedCore = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposedVersion" }
+exposedJdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposedVersion" }
+h2Driver = { module = "com.h2database:h2", version.ref = "h2Version" }
+hikari = { module = "com.zaxxer:HikariCP", version.ref = "hikariVersion" }
+junit5Engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit5Version"}
+junit5Api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit5Version"}
+koinKtor = { module = "io.insert-koin:koin-ktor", version.ref = "koinKtorVersion" }
+koinLogger = { module = "io.insert-koin:koin-logger-slf4j", version.ref = "koinKtorVersion" }
+kotestArrowAssert = { module = "io.kotest.extensions:kotest-assertions-arrow", version.ref = "kotestArrowVersion" }
+kotestCoreAssertion = { module = "io.kotest:kotest-assertions-core", version.ref = "kotestVersion" }
+kotestRunnerJunit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotestVersion" }
+ktorServerCore = { module = "io.ktor:ktor-server-core-jvm", version.ref = "ktorVersion" }
+ktorServerNetty = { module = "io.ktor:ktor-server-netty-jvm", version.ref = "ktorVersion" }
+ktorServerAuth = { module = "io.ktor:ktor-server-auth-jvm", version.ref = "ktorVersion" }
+ktorServerContentNegotiation = { module = "io.ktor:ktor-server-content-negotiation-jvm", version.ref = "ktorVersion" }
+ktorServerJackson = { module = "io.ktor:ktor-serialization-jackson-jvm", version.ref = "ktorVersion" }
+ktorServerTestHost = { module = "io.ktor:ktor-server-test-host", version.ref = "ktorVersion"}
+logback = { module = "ch.qos.logback:logback-classic", version.ref = "logbackVersion"}
+mockitoKotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoKotlinVersion" }
+pitestJunit5 = { module = "org.pitest:pitest-junit5-plugin", version.ref = "pitestJunit5Version" }
+postgresqlDriver = { module = "org.postgresql:postgresql", version.ref = "postgresqlVersion" }
+testcontainersPostresql = { module = "org.testcontainers:postgresql", version.ref = "testcontainersVersion" }
+testContainersJunit5 = { module = "org.testcontainers:junit-jupiter", version.ref = "testcontainersVersion" }
+
+[plugins]
+catalogUpdate = { id = "nl.littlerobots.version-catalog-update", version.ref = "versionCatalogUpdateVersion" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detektVersion" }
+kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlinVersion" }
+ktor = {id = "io.ktor.plugin", version.ref = "ktorVersion"}
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlintVersion" }
+pitest = { id = "info.solidsoft.pitest", version.ref = "pitestVersion" }
+versionUpdate = { id = "com.github.ben-manes.versions", version.ref = "versionUpdateVersion" }

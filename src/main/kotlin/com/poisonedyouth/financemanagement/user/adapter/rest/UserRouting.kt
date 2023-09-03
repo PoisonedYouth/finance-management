@@ -45,7 +45,7 @@ public fun Application.configureUserRouting() {
                     call.respond(
                         status = HttpStatusCode.Created,
                         message = mapOf(
-                            "userId" to it,
+                            "userId" to it
                         )
                     )
                 }

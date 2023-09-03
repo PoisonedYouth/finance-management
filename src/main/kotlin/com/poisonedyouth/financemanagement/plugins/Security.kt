@@ -30,7 +30,6 @@ public fun Application.configureSecurity() {
                     is Either.Right -> UserIdPrincipal(credentials.name)
                     else -> null
                 }
-
             }
         }
     }

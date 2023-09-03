@@ -1,20 +1,12 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
-val ktorVersion: String by project
-val kotlinVersion: String by project
-val logbackVersion: String by project
-val exposedVersion: String by project
-val h2Version: String by project
-val koinKtorVersion: String by project
-val junit5Version: String by project
-val kotestVersion: String by project
-
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    kotlin("jvm") version "1.9.0"
-    id("io.ktor.plugin") version "2.3.2"
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.0"
-    id("org.jlleitschuh.gradle.ktlint") version "11.5.0"
-    id("io.gitlab.arturbosch.detekt") version "1.23.0"
+    alias(libs.plugins.kotlinJvm)
+    alias(libs.plugins.ktor)
+    alias(libs.plugins.ktlint)
+    alias(libs.plugins.versionUpdate)
+    alias(libs.plugins.catalogUpdate)
+    alias(libs.plugins.pitest)
+    jacoco
 }
 
 group = "com.poisonedyouth"
@@ -31,51 +23,85 @@ repositories {
 }
 
 dependencies {
-    implementation("io.ktor:ktor-server-core-jvm:$ktorVersion")
-    implementation("io.ktor:ktor-server-auth-jvm:$ktorVersion")
-    implementation("io.ktor:ktor-server-content-negotiation-jvm:$ktorVersion")
-    implementation("io.ktor:ktor-serialization-jackson-jvm:$ktorVersion")
-    implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:$ktorVersion")
-    implementation("io.ktor:ktor-server-auth:$ktorVersion")
-    implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
-    implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
-    implementation("io.insert-koin:koin-ktor:$koinKtorVersion")
-    implementation("io.insert-koin:koin-logger-slf4j:$koinKtorVersion")
-    implementation("io.ktor:ktor-server-netty-jvm:$ktorVersion")
-    implementation("ch.qos.logback:logback-classic:$logbackVersion")
-    implementation(platform("io.arrow-kt:arrow-stack:1.2.0-RC"))
-    implementation("io.arrow-kt:arrow-core")
+    // ktor
+    implementation(libs.ktorServerCore)
+    implementation(libs.ktorServerAuth)
+    implementation(libs.ktorServerContentNegotiation)
+    implementation(libs.ktorServerJackson)
+    implementation(libs.ktorServerNetty)
 
-    implementation("org.postgresql:postgresql:42.6.0")
-    implementation("com.zaxxer:HikariCP:5.0.1")
-    implementation("com.h2database:h2:$h2Version")
+    // exposed
+    implementation(libs.exposedCore)
+    implementation(libs.exposedJdbc)
 
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:$junit5Version")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:$junit5Version")
-    testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
-    testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
-    testImplementation("io.kotest.extensions:kotest-assertions-arrow-jvm:1.3.3")
-    testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
+    // koin
+    implementation(libs.koinKtor)
+    implementation(libs.koinLogger)
 
-    testImplementation("org.testcontainers:postgresql:1.18.3")
-    testImplementation("org.testcontainers:junit-jupiter:1.18.3")
+    // logging
+    implementation(libs.logback)
+
+    // arrow
+    implementation(platform(libs.arrowStack))
+    implementation(libs.arrowCore)
+
+    // persistence
+    implementation(libs.postgresqlDriver)
+    implementation(libs.hikari)
+    implementation(libs.h2Driver)
+
+    // testing
+    testImplementation(libs.junit5Engine)
+    testImplementation(libs.junit5Api)
+    testImplementation(libs.kotestRunnerJunit5)
+    testImplementation(libs.kotestCoreAssertion)
+    testImplementation(libs.kotestArrowAssert)
+    testImplementation(libs.ktorServerTestHost)
+
+    testImplementation(libs.testcontainersPostresql)
+    testImplementation(libs.testContainersJunit5)
 }
 
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
 }
 
-tasks
-    .withType<org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile>()
-    .configureEach {
-        compilerOptions
-            .languageVersion
-            .set(
-                org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_1_9
-            )
-        compilerOptions.jvmTarget.set(JvmTarget.JVM_17)
+val jdkVersion: String = libs.versions.jdkVersion.get()
+kotlin {
+    jvmToolchain {
+        this.languageVersion.set(JavaLanguageVersion.of(jdkVersion))
     }
+}
 
 kotlin {
     explicitApi()
+}
+
+tasks.test {
+    finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run
+}
+tasks.jacocoTestReport {
+    dependsOn(tasks.test) // tests are required to run before generating the report
+}
+
+tasks.jacocoTestReport {
+    reports {
+        xml.required.set(false)
+        csv.required.set(false)
+        html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
+    }
+}
+
+pitest {
+    setProperty("junit5PluginVersion", libs.versions.pitestJunit5Version)
+    setProperty("testPlugin", "junit5")
+    setProperty("targetClasses", listOf("com.poisonedyouth.financemanagement.*"))
+    setProperty("mutationThreshold", 10)
+    setProperty("outputFormats", listOf("HTML"))
+    setProperty("threads", 8)
+    setProperty("withHistory", true)
+    setProperty("failWhenNoMutations", false)
+    setProperty("useClasspathFile", true)
+    setProperty("jvmArgs", listOf("-Xmx16G"))
+    setProperty("avoidCallsTo", listOf("kotlin.jvm.internal"))
 }
